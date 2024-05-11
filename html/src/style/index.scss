@@ -6,6 +6,13 @@ body {
   overflow: hidden;
 }
 
+@font-face {
+    font-family: JetBrains;
+    font-style: normal;
+    font-weight: normal;
+    src: url('webfont/JetBrainsMono-Regular.woff2') format('WOFF2');
+}
+
 #terminal-container {
   width: auto;
   height: 100%;
