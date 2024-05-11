@@ -271,8 +271,7 @@ static int calc_command_start(int argc, char **argv) {
 
   // do not print error message for invalid option
   opterr = 0;
-  while (getopt_long(argc_copy, argv_copy, opt_string, options, NULL) != -1)
-    ;
+  while (getopt_long(argc_copy, argv_copy, opt_string, options, NULL) != -1);
 
   int start = argc;
   if (optind < argc) {
@@ -553,9 +552,9 @@ int main(int argc, char **argv) {
   if (ssl) {
     info.ssl_cert_filepath = cert_path;
     info.ssl_private_key_filepath = key_path;
-    #ifndef LWS_WITH_MBEDTLS
+#ifndef LWS_WITH_MBEDTLS
     info.ssl_options_set = SSL_OP_NO_TLSv1 | SSL_OP_NO_TLSv1_1;
-    #endif
+#endif
     if (strlen(ca_path) > 0) {
       info.ssl_ca_filepath = ca_path;
       info.options |= LWS_SERVER_OPTION_REQUIRE_VALID_OPENSSL_CLIENT_CERT;

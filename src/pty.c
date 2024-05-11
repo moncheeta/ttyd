@@ -30,9 +30,9 @@ extern char **environ;
 #include "utils.h"
 
 #ifdef _WIN32
-HRESULT (WINAPI *pCreatePseudoConsole)(COORD, HANDLE, HANDLE, DWORD, HPCON *);
-HRESULT (WINAPI *pResizePseudoConsole)(HPCON, COORD);
-void (WINAPI *pClosePseudoConsole)(HPCON);
+HRESULT(WINAPI *pCreatePseudoConsole)(COORD, HANDLE, HANDLE, DWORD, HPCON *);
+HRESULT(WINAPI *pResizePseudoConsole)(HPCON, COORD);
+void(WINAPI *pClosePseudoConsole)(HPCON);
 #endif
 
 static void alloc_cb(uv_handle_t *unused, size_t suggested_size, uv_buf_t *buf) {
@@ -42,9 +42,7 @@ static void alloc_cb(uv_handle_t *unused, size_t suggested_size, uv_buf_t *buf) 
 
 static void close_cb(uv_handle_t *handle) { free(handle); }
 
-static void async_free_cb(uv_handle_t *handle) {
-  free((uv_async_t *) handle -> data);
-}
+static void async_free_cb(uv_handle_t *handle) { free((uv_async_t *)handle->data); }
 
 pty_buf_t *pty_buf_init(char *base, size_t len) {
   pty_buf_t *buf = xmalloc(sizeof(pty_buf_t));
@@ -62,20 +60,20 @@ void pty_buf_free(pty_buf_t *buf) {
 
 static void read_cb(uv_stream_t *stream, ssize_t n, const uv_buf_t *buf) {
   uv_read_stop(stream);
-  pty_process *process = (pty_process *) stream->data;
+  pty_process *process = (pty_process *)stream->data;
   if (n <= 0) {
     if (n == UV_ENOBUFS || n == 0) return;
     process->read_cb(process, NULL, true);
     goto done;
   }
-  process->read_cb(process, pty_buf_init(buf->base, (size_t) n), false);
+  process->read_cb(process, pty_buf_init(buf->base, (size_t)n), false);
 
 done:
   free(buf->base);
 }
 
 static void write_cb(uv_write_t *req, int unused) {
-  pty_buf_t *buf = (pty_buf_t *) req->data;
+  pty_buf_t *buf = (pty_buf_t *)req->data;
   pty_buf_free(buf);
   free(req);
 }
@@ -110,8 +108,8 @@ void process_free(pty_process *process) {
   close(process->pty);
   uv_thread_join(&process->tid);
 #endif
-  if (process->in != NULL) uv_close((uv_handle_t *) process->in, close_cb);
-  if (process->out != NULL) uv_close((uv_handle_t *) process->out, close_cb);
+  if (process->in != NULL) uv_close((uv_handle_t *)process->in, close_cb);
+  if (process->out != NULL) uv_close((uv_handle_t *)process->out, close_cb);
   if (process->argv != NULL) free(process->argv);
   if (process->cwd != NULL) free(process->cwd);
   char **p = process->envp;
@@ -122,14 +120,14 @@ void process_free(pty_process *process) {
 void pty_pause(pty_process *process) {
   if (process == NULL) return;
   if (process->paused) return;
-  uv_read_stop((uv_stream_t *) process->out);
+  uv_read_stop((uv_stream_t *)process->out);
 }
 
 void pty_resume(pty_process *process) {
   if (process == NULL) return;
   if (!process->paused) return;
   process->out->data = process;
-  uv_read_start((uv_stream_t *) process->out, alloc_cb, read_cb);
+  uv_read_start((uv_stream_t *)process->out, alloc_cb, read_cb);
 }
 
 int pty_write(pty_process *process, pty_buf_t *buf) {
@@ -140,14 +138,14 @@ int pty_write(pty_process *process, pty_buf_t *buf) {
   uv_buf_t b = uv_buf_init(buf->base, buf->len);
   uv_write_t *req = xmalloc(sizeof(uv_write_t));
   req->data = buf;
-  return uv_write(req, (uv_stream_t *) process->in, &b, 1, write_cb);
+  return uv_write(req, (uv_stream_t *)process->in, &b, 1, write_cb);
 }
 
 bool pty_resize(pty_process *process) {
   if (process == NULL) return false;
   if (process->columns <= 0 || process->rows <= 0) return false;
 #ifdef _WIN32
-  COORD size = {(int16_t) process->columns, (int16_t) process->rows};
+  COORD size = {(int16_t)process->columns, (int16_t)process->rows};
   return pResizePseudoConsole(process->pty, size) == S_OK;
 #else
   struct winsize size = {process->rows, process->columns, 0, 0};
@@ -174,12 +172,12 @@ bool conpty_init() {
   static struct {
     char *name;
     FARPROC *ptr;
-  } conpty_entry[] = {{"CreatePseudoConsole", (FARPROC *) &pCreatePseudoConsole},
-                      {"ResizePseudoConsole", (FARPROC *) &pResizePseudoConsole},
-                      {"ClosePseudoConsole", (FARPROC *) &pClosePseudoConsole},
+  } conpty_entry[] = {{"CreatePseudoConsole", (FARPROC *)&pCreatePseudoConsole},
+                      {"ResizePseudoConsole", (FARPROC *)&pResizePseudoConsole},
+                      {"ClosePseudoConsole", (FARPROC *)&pClosePseudoConsole},
                       {NULL, NULL}};
   for (int i = 0; conpty_entry[i].name != NULL && conpty_entry[i].ptr != NULL; i++) {
-    if (uv_dlsym(&kernel, conpty_entry[i].name, (void **) conpty_entry[i].ptr)) {
+    if (uv_dlsym(&kernel, conpty_entry[i].name, (void **)conpty_entry[i].ptr)) {
       uv_dlclose(&kernel);
       return false;
     }
@@ -204,7 +202,7 @@ static WCHAR *join_args(char **argv) {
   char args[256] = {0};
   char **ptr = argv;
   for (; *ptr; ptr++) {
-    char *quoted = (char *) quote_arg(*ptr);
+    char *quoted = (char *)quote_arg(*ptr);
     size_t arg_len = strlen(args) + 1;
     size_t quoted_len = strlen(quoted);
     if (arg_len == 1) memset(args, 0, 2);
@@ -253,7 +251,7 @@ static bool conpty_setup(HPCON *hnd, COORD size, STARTUPINFOEXW *si_ex, char **i
   si_ex->StartupInfo.hStdOutput = NULL;
   size_t bytes_required;
   InitializeProcThreadAttributeList(NULL, 1, 0, &bytes_required);
-  si_ex->lpAttributeList = (PPROC_THREAD_ATTRIBUTE_LIST) xmalloc(bytes_required);
+  si_ex->lpAttributeList = (PPROC_THREAD_ATTRIBUTE_LIST)xmalloc(bytes_required);
   if (!InitializeProcThreadAttributeList(si_ex->lpAttributeList, 1, 0, &bytes_required)) {
     print_error("InitializeProcThreadAttributeList");
     goto failed;
@@ -283,21 +281,21 @@ done:
 static void connect_cb(uv_connect_t *req, int status) { free(req); }
 
 static void CALLBACK conpty_exit(void *context, BOOLEAN unused) {
-  pty_process *process = (pty_process *) context;
+  pty_process *process = (pty_process *)context;
   uv_async_send(&process->async);
 }
 
 static void async_cb(uv_async_t *async) {
-  pty_process *process = (pty_process *) async->data;
+  pty_process *process = (pty_process *)async->data;
   UnregisterWait(process->wait);
 
   DWORD exit_code;
   GetExitCodeProcess(process->handle, &exit_code);
-  process->exit_code = (int) exit_code;
+  process->exit_code = (int)exit_code;
   process->exit_signal = 1;
   process->exit_cb(process);
 
-  uv_close((uv_handle_t *) async, async_free_cb);
+  uv_close((uv_handle_t *)async, async_free_cb);
   process_free(process);
 }
 
@@ -305,7 +303,7 @@ int pty_spawn(pty_process *process, pty_read_cb read_cb, pty_exit_cb exit_cb) {
   char *in_name = NULL;
   char *out_name = NULL;
   DWORD flags = EXTENDED_STARTUPINFO_PRESENT | CREATE_UNICODE_ENVIRONMENT;
-  COORD size = {(int16_t) process->columns, (int16_t) process->rows};
+  COORD size = {(int16_t)process->columns, (int16_t)process->rows};
 
   if (!conpty_setup(&process->pty, size, &process->si, &in_name, &out_name)) return 1;
 
@@ -388,12 +386,11 @@ static bool fd_duplicate(int fd, uv_pipe_t *pipe) {
 }
 
 static void wait_cb(void *arg) {
-  pty_process *process = (pty_process *) arg;
+  pty_process *process = (pty_process *)arg;
 
   pid_t pid;
   int stat;
-  do
-    pid = waitpid(process->pid, &stat, 0);
+  do pid = waitpid(process->pid, &stat, 0);
   while (pid != process->pid && errno == EINTR);
 
   if (WIFEXITED(stat)) {
@@ -409,10 +406,10 @@ static void wait_cb(void *arg) {
 }
 
 static void async_cb(uv_async_t *async) {
-  pty_process *process = (pty_process *) async->data;
+  pty_process *process = (pty_process *)async->data;
   process->exit_cb(process);
 
-  uv_close((uv_handle_t *) async, async_free_cb);
+  uv_close((uv_handle_t *)async, async_free_cb);
   process_free(process);
 }
 

@@ -1,9 +1,9 @@
-import { bind } from 'decko';
-import { Component, h } from 'preact';
-import { Xterm, XtermOptions } from './xterm';
+import { bind } from "decko";
+import { Component, h } from "preact";
+import { Xterm, XtermOptions } from "./xterm";
 
-import '@xterm/xterm/css/xterm.css';
-import { Modal } from '../modal';
+import "@xterm/xterm/css/xterm.css";
+import { Modal } from "../modal";
 
 interface Props extends XtermOptions {
     id: string;
@@ -34,7 +34,7 @@ export class Terminal extends Component<Props, State> {
 
     render({ id }: Props, { modal }: State) {
         return (
-            <div id={id} ref={c => (this.container = c as HTMLElement)}>
+            <div id={id} ref={(c) => (this.container = c as HTMLElement)}>
                 <Modal show={modal}>
                     <label class="file-label">
                         <input onChange={this.sendFile} class="file-input" type="file" multiple />

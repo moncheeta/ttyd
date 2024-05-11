@@ -1,8 +1,8 @@
-import { bind } from 'decko';
-import { saveAs } from 'file-saver';
-import { IDisposable, ITerminalAddon, Terminal } from '@xterm/xterm';
-import * as Zmodem from 'zmodem.js/src/zmodem_browser';
-import { TrzszFilter } from 'trzsz';
+import { bind } from "decko";
+import { saveAs } from "file-saver";
+import { IDisposable, ITerminalAddon, Terminal } from "@xterm/xterm";
+import * as Zmodem from "zmodem.js/src/zmodem_browser";
+import { TrzszFilter } from "trzsz";
 
 export interface ZmodeOptions {
     zmodem: boolean;
@@ -45,7 +45,7 @@ export class ZmodemAddon implements ITerminalAddon {
                 this.sentry.consume(data);
             }
         } catch (e) {
-            console.error('[ttyd] zmodem consume: ', e);
+            console.error("[ttyd] zmodem consume: ", e);
             this.reset();
         }
     }
@@ -58,7 +58,9 @@ export class ZmodemAddon implements ITerminalAddon {
 
     private addDisposableListener(target: EventTarget, type: string, listener: EventListener) {
         target.addEventListener(type, listener);
-        this.disposables.push({ dispose: () => target.removeEventListener(type, listener) });
+        this.disposables.push({
+            dispose: () => target.removeEventListener(type, listener),
+        });
     }
 
     @bind
@@ -66,28 +68,28 @@ export class ZmodemAddon implements ITerminalAddon {
         const { terminal } = this;
         const { sender, writer, zmodem } = this.options;
         this.trzszFilter = new TrzszFilter({
-            writeToTerminal: data => {
+            writeToTerminal: (data) => {
                 if (!this.trzszFilter.isTransferringFiles() && zmodem) {
                     this.sentry.consume(data);
                 } else {
-                    writer(typeof data === 'string' ? data : new Uint8Array(data as ArrayBuffer));
+                    writer(typeof data === "string" ? data : new Uint8Array(data as ArrayBuffer));
                 }
             },
-            sendToServer: data => sender(data),
+            sendToServer: (data) => sender(data),
             terminalColumns: terminal.cols,
             isWindowsShell: this.options.windows,
             dragInitTimeout: this.options.trzszDragInitTimeout,
         });
         const element = terminal.element as EventTarget;
-        this.addDisposableListener(element, 'dragover', event => event.preventDefault());
-        this.addDisposableListener(element, 'drop', event => {
+        this.addDisposableListener(element, "dragover", (event) => event.preventDefault());
+        this.addDisposableListener(element, "drop", (event) => {
             event.preventDefault();
             this.trzszFilter
                 .uploadFiles((event as DragEvent).dataTransfer?.items as DataTransferItemList)
-                .then(() => console.log('[ttyd] upload success'))
-                .catch(err => console.log('[ttyd] upload failed: ' + err));
+                .then(() => console.log("[ttyd] upload success"))
+                .catch((err) => console.log("[ttyd] upload failed: " + err));
         });
-        this.disposables.push(terminal.onResize(size => this.trzszFilter.setTerminalColumns(size.cols)));
+        this.disposables.push(terminal.onResize((size) => this.trzszFilter.setTerminalColumns(size.cols)));
     }
 
     @bind
@@ -96,18 +98,18 @@ export class ZmodemAddon implements ITerminalAddon {
         const { terminal, reset, zmodemDetect } = this;
         this.session = null;
         this.sentry = new Zmodem.Sentry({
-            to_terminal: octets => writer(new Uint8Array(octets)),
-            sender: octets => sender(new Uint8Array(octets)),
+            to_terminal: (octets) => writer(new Uint8Array(octets)),
+            sender: (octets) => sender(new Uint8Array(octets)),
             on_retract: () => reset(),
-            on_detect: detection => zmodemDetect(detection),
+            on_detect: (detection) => zmodemDetect(detection),
         });
         this.disposables.push(
-            terminal.onKey(e => {
+            terminal.onKey((e) => {
                 const event = e.domEvent;
-                if (event.ctrlKey && event.key === 'c') {
+                if (event.ctrlKey && event.key === "c") {
                     if (this.denier) this.denier();
                 }
-            })
+            }),
         );
     }
 
@@ -118,9 +120,9 @@ export class ZmodemAddon implements ITerminalAddon {
 
         this.denier = () => detection.deny();
         this.session = detection.confirm();
-        this.session.on('session_end', () => this.reset());
+        this.session.on("session_end", () => this.reset());
 
-        if (this.session.type === 'send') {
+        if (this.session.type === "send") {
             this.options.onSend();
         } else {
             receiveFile();
@@ -141,12 +143,14 @@ export class ZmodemAddon implements ITerminalAddon {
     private receiveFile() {
         const { session, writeProgress } = this;
 
-        session.on('offer', offer => {
-            offer.on('input', () => writeProgress(offer));
+        session.on("offer", (offer) => {
+            offer.on("input", () => writeProgress(offer));
             offer
                 .accept()
-                .then(payloads => {
-                    const blob = new Blob(payloads, { type: 'application/octet-stream' });
+                .then((payloads) => {
+                    const blob = new Blob(payloads, {
+                        type: "application/octet-stream",
+                    });
                     saveAs(blob, offer.get_details().name);
                 })
                 .catch(() => this.reset());
@@ -170,11 +174,11 @@ export class ZmodemAddon implements ITerminalAddon {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private bytesHuman(bytes: any, precision: number): string {
         if (!/^([-+])?|(\.\d+)(\d+(\.\d+)?|(\d+\.)|Infinity)$/.test(bytes)) {
-            return '-';
+            return "-";
         }
-        if (bytes === 0) return '0';
-        if (typeof precision === 'undefined') precision = 1;
-        const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
+        if (bytes === 0) return "0";
+        if (typeof precision === "undefined") precision = 1;
+        const units = ["bytes", "KB", "MB", "GB", "TB", "PB"];
         const num = Math.floor(Math.log(bytes) / Math.log(1024));
         const value = (bytes / Math.pow(1024, Math.floor(num))).toFixed(precision);
         return `${value} ${units[num]}`;

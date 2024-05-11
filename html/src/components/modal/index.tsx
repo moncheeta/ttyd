@@ -1,6 +1,6 @@
-import { h, Component, ComponentChildren } from 'preact';
+import { h, Component, ComponentChildren } from "preact";
 
-import './modal.scss';
+import "./modal.scss";
 
 interface Props {
     show: boolean;

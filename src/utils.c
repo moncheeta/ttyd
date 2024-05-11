@@ -7,20 +7,20 @@
 #include <string.h>
 
 #if defined(__linux__) && !defined(__ANDROID__)
-const char *sys_signame[NSIG] = {
-    "zero", "HUP",  "INT",  "QUIT", "ILL",    "TRAP",   "ABRT",  "UNUSED", "FPE",  "KILL", "USR1",
-    "SEGV", "USR2", "PIPE", "ALRM", "TERM",   "STKFLT", "CHLD",  "CONT",   "STOP", "TSTP", "TTIN",
-    "TTOU", "URG",  "XCPU", "XFSZ", "VTALRM", "PROF",   "WINCH", "IO",     "PWR",  "SYS",  NULL};
+const char *sys_signame[NSIG] = {"zero", "HUP",   "INT",  "QUIT", "ILL",  "TRAP", "ABRT", "UNUSED", "FPE",
+                                 "KILL", "USR1",  "SEGV", "USR2", "PIPE", "ALRM", "TERM", "STKFLT", "CHLD",
+                                 "CONT", "STOP",  "TSTP", "TTIN", "TTOU", "URG",  "XCPU", "XFSZ",   "VTALRM",
+                                 "PROF", "WINCH", "IO",   "PWR",  "SYS",  NULL};
 #endif
 
 #if defined(_WIN32) || defined(__CYGWIN__)
 #include <windows.h>
 #undef NSIG
 #define NSIG 33
-const char *sys_signame[NSIG] = {
-    "zero", "HUP", "INT",  "QUIT", "ILL",    "TRAP", "IOT",   "EMT",  "FPE",  "KILL", "BUS",
-    "SEGV", "SYS", "PIPE", "ALRM", "TERM",   "URG",  "STOP",  "TSTP", "CONT", "CHLD", "TTIN",
-    "TTOU", "IO",  "XCPU", "XFSZ", "VTALRM", "PROF", "WINCH", "PWR",  "USR1", "USR2", NULL};
+const char *sys_signame[NSIG] = {"zero", "HUP",   "INT",  "QUIT", "ILL",  "TRAP", "IOT",  "EMT",  "FPE",
+                                 "KILL", "BUS",   "SEGV", "SYS",  "PIPE", "ALRM", "TERM", "URG",  "STOP",
+                                 "TSTP", "CONT",  "CHLD", "TTIN", "TTOU", "IO",   "XCPU", "XFSZ", "VTALRM",
+                                 "PROF", "WINCH", "PWR",  "USR1", "USR2", NULL};
 #endif
 
 void *xmalloc(size_t size) {
@@ -38,7 +38,7 @@ void *xrealloc(void *p, size_t size) {
 }
 
 char *uppercase(char *s) {
-  while(*s) {
+  while (*s) {
     *s = (char)toupper((int)*s);
     s++;
   }
@@ -46,7 +46,7 @@ char *uppercase(char *s) {
 }
 
 char *lowercase(char *s) {
-  while(*s) {
+  while (*s) {
     *s = (char)tolower((int)*s);
     s++;
   }
@@ -68,8 +68,7 @@ int get_sig_name(int sig, char *buf, size_t len) {
 int get_sig(const char *sig_name) {
   for (int sig = 1; sig < NSIG; sig++) {
     const char *name = sys_signame[sig];
-    if (name != NULL && (strcasecmp(name, sig_name) == 0 || strcasecmp(name, sig_name + 3) == 0))
-      return sig;
+    if (name != NULL && (strcasecmp(name, sig_name) == 0 || strcasecmp(name, sig_name + 3) == 0)) return sig;
   }
   return atoi(sig_name);
 }
@@ -154,9 +153,8 @@ const char *quote_arg(const char *arg) {
 void print_error(char *func) {
   LPVOID buffer;
   DWORD dw = GetLastError();
-  FormatMessage(
-      FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-      NULL, dw, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&buffer, 0, NULL);
+  FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, dw,
+                MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&buffer, 0, NULL);
   wprintf(L"== %s failed with error %d: %s", func, dw, buffer);
   LocalFree(buffer);
 }

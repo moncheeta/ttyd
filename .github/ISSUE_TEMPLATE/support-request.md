@@ -1,10 +1,9 @@
 ---
 name: Support Request
 about: Support request or question
-title: ''
+title: ""
 labels: question
-assignees: ''
-
+assignees: ""
 ---
 
 Describe your problem or question here.

@@ -3,12 +3,12 @@ name: frontend
 on:
   push:
     paths:
-    - ".github/workflows/frontend.yml"
-    - "html/*"
+      - ".github/workflows/frontend.yml"
+      - "html/*"
   pull_request:
     paths:
-    - ".github/workflows/frontend.yml"
-    - "html/*"
+      - ".github/workflows/frontend.yml"
+      - "html/*"
 
 jobs:
   build:

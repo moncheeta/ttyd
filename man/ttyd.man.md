@@ -1,113 +1,117 @@
-ttyd 1 "September 2016" ttyd "User Manual"
-==================================================
+# ttyd 1 "September 2016" ttyd "User Manual"
 
 # NAME
-  ttyd - Share your terminal over the web
+
+ttyd - Share your terminal over the web
 
 # SYNOPSIS
-  **ttyd** [options] \<command\> [\<arguments...\>]
+
+**ttyd** [options] \<command\> [\<arguments...\>]
 
 # DESCRIPTION
-  ttyd is a command-line tool for sharing terminal over the web that runs in *nix and windows systems, with the following features:
 
-  - Built on top of Libwebsockets with libuv for speed
-  - Fully-featured terminal based on Xterm.js with CJK (Chinese, Japanese, Korean) and IME support
-  - Graphical ZMODEM integration with lrzsz support
-  - Sixel image output support
-  - SSL support based on OpenSSL
-  - Run any custom command with options
-  - Basic authentication support and many other custom options
-  - Cross platform: macOS, Linux, FreeBSD/OpenBSD, OpenWrt/LEDE, Windows
+ttyd is a command-line tool for sharing terminal over the web that runs in \*nix and windows systems, with the following features:
+
+- Built on top of Libwebsockets with libuv for speed
+- Fully-featured terminal based on Xterm.js with CJK (Chinese, Japanese, Korean) and IME support
+- Graphical ZMODEM integration with lrzsz support
+- Sixel image output support
+- SSL support based on OpenSSL
+- Run any custom command with options
+- Basic authentication support and many other custom options
+- Cross platform: macOS, Linux, FreeBSD/OpenBSD, OpenWrt/LEDE, Windows
 
 # OPTIONS
-  -p, --port <port>
-      Port to listen (default: 7681, use `0` for random port)
 
-  -i, --interface <interface>
-      Network interface to bind (eg: eth0), or UNIX domain socket path (eg: /var/run/ttyd.sock)
+-p, --port <port>
+Port to listen (default: 7681, use `0` for random port)
 
-  -U, --socket-owner
-      User owner of the UNIX domain socket file, when enabled (eg: user:group)
+-i, --interface <interface>
+Network interface to bind (eg: eth0), or UNIX domain socket path (eg: /var/run/ttyd.sock)
 
-  -c, --credential USER[:PASSWORD]
-      Credential for Basic Authentication (format: username:password)
+-U, --socket-owner
+User owner of the UNIX domain socket file, when enabled (eg: user:group)
 
-  -H, --auth-header <name>
-      HTTP Header name for auth proxy, this will configure ttyd to let a HTTP reverse proxy handle authentication
+-c, --credential USER[:PASSWORD]
+Credential for Basic Authentication (format: username:password)
 
-  -u, --uid <uid>
-      User id to run with
+-H, --auth-header <name>
+HTTP Header name for auth proxy, this will configure ttyd to let a HTTP reverse proxy handle authentication
 
-  -g, --gid <gid>
-      Group id to run with
+-u, --uid <uid>
+User id to run with
 
-  -s, --signal <signal string>
-      Signal to send to the command when exit it (default: 1, SIGHUP)
+-g, --gid <gid>
+Group id to run with
 
-  -w, --cwd <path>
-      Working directory to be set for the child program
+-s, --signal <signal string>
+Signal to send to the command when exit it (default: 1, SIGHUP)
 
-  -a, --url-arg
-      Allow client to send command line arguments in URL (eg: http://localhost:7681?arg=foo&arg=bar)
+-w, --cwd <path>
+Working directory to be set for the child program
 
-  -W, --writable
-      Allow clients to write to the TTY (readonly by default)
+-a, --url-arg
+Allow client to send command line arguments in URL (eg: http://localhost:7681?arg=foo&arg=bar)
 
-  -t, --client-option <key=value>
-      Send option to client (format: key=value), repeat to add more options, see **CLIENT OPTIONS** for details
+-W, --writable
+Allow clients to write to the TTY (readonly by default)
 
-  -T, --terminal-type
-      Terminal type to report, default: xterm-256color
+-t, --client-option <key=value>
+Send option to client (format: key=value), repeat to add more options, see **CLIENT OPTIONS** for details
 
-  -O, --check-origin
-      Do not allow websocket connection from different origin
+-T, --terminal-type
+Terminal type to report, default: xterm-256color
 
-  -m, --max-clients
-      Maximum clients to support (default: 0, no limit)
+-O, --check-origin
+Do not allow websocket connection from different origin
 
-  -o, --once
-      Accept only one client and exit on disconnection
+-m, --max-clients
+Maximum clients to support (default: 0, no limit)
 
-  -q, --exit-no-conn
-      Exit on all clients disconnection
+-o, --once
+Accept only one client and exit on disconnection
 
-  -B, --browser
-      Open terminal with the default system browser
+-q, --exit-no-conn
+Exit on all clients disconnection
 
-  -I, --index <index file>
-      Custom index.html path
-  
-  -b, --base-path
-      Expected base path for requests coming from a reverse proxy (eg: /mounted/here, max length: 128)
+-B, --browser
+Open terminal with the default system browser
 
-  -P, --ping-interval
-      Websocket ping interval(sec) (default: 5)
+-I, --index <index file>
+Custom index.html path
 
-  -6, --ipv6
-      Enable IPv6 support
+-b, --base-path
+Expected base path for requests coming from a reverse proxy (eg: /mounted/here, max length: 128)
 
-  -S, --ssl
-      Enable SSL
+-P, --ping-interval
+Websocket ping interval(sec) (default: 5)
 
-  -C, --ssl-cert <cert path>
-      SSL certificate file path
+-6, --ipv6
+Enable IPv6 support
 
-  -K, --ssl-key <key path>
-      SSL key file path
+-S, --ssl
+Enable SSL
 
-  -A, --ssl-ca <ca path>
-      SSL CA file path for client certificate verification
+-C, --ssl-cert <cert path>
+SSL certificate file path
 
-  -d, --debug <level>
-      Set log level (default: 7)
+-K, --ssl-key <key path>
+SSL key file path
 
-  -v, --version
-      Print the version and exit
+-A, --ssl-ca <ca path>
+SSL CA file path for client certificate verification
 
-  -h, --help
-      Print this text and exit
+-d, --debug <level>
+Set log level (default: 7)
+
+-v, --version
+Print the version and exit
+
+-h, --help
+Print this text and exit
 
 # CLIENT OPTIONS
+
 ttyd has a mechanism to pass server side command-line arguments to the browser page which is called **client options**:
 
 ```bash
@@ -141,20 +145,22 @@ ttyd -t cursorStyle=bar -t lineHeight=1.5 -t 'theme={"background": "green"}' bas
 ```
 
 # EXAMPLES
-  ttyd starts web server at port 7681 by default, you can use the -p option to change it, the command will be started with arguments as options. For example, run:
-  
-```  
+
+ttyd starts web server at port 7681 by default, you can use the -p option to change it, the command will be started with arguments as options. For example, run:
+
+```
 ttyd -p 8080 bash -x
 ```
 
-  Then open http://localhost:8080 with a browser, you will get a bash shell with debug mode enabled. More examples:
+Then open http://localhost:8080 with a browser, you will get a bash shell with debug mode enabled. More examples:
 
-  - If you want to login with your system accounts on the web browser, run `ttyd login`.
-  - You can even run a none shell command like vim, try: `ttyd vim`, the web browser will show you a vim editor.
-  - Sharing single process with multiple clients: `ttyd tmux new -A -s ttyd vim`, run `tmux new -A -s ttyd` to connect to the tmux session from terminal.
+- If you want to login with your system accounts on the web browser, run `ttyd login`.
+- You can even run a none shell command like vim, try: `ttyd vim`, the web browser will show you a vim editor.
+- Sharing single process with multiple clients: `ttyd tmux new -A -s ttyd vim`, run `tmux new -A -s ttyd` to connect to the tmux session from terminal.
 
 # SSL how-to
-  Generate SSL CA and self signed server/client certificates:
+
+Generate SSL CA and self signed server/client certificates:
 
 ```
 # CA certificate (FQDN must be different from server/client)
@@ -172,25 +178,26 @@ openssl pkcs12 -export -clcerts -in client.crt -inkey client.key -out client.p12
 openssl pkcs12 -in client.p12 -out client.pem -clcerts
 ```
 
-  Then start ttyd:
+Then start ttyd:
 
 ```
 ttyd --ssl --ssl-cert server.crt --ssl-key server.key --ssl-ca ca.crt bash
 ```
 
-  You may want to test the client certificate verification with *curl*(1):
+You may want to test the client certificate verification with _curl_(1):
 
 ```
 curl --insecure --cert client.p12[:password] -v https://localhost:7681
 ```
 
-  If you don't want to enable client certificate verification, remove the `--ssl-ca` option.
+If you don't want to enable client certificate verification, remove the `--ssl-ca` option.
 
 # Docker and ttyd
-  Docker containers are jailed environments which are more secure, this is useful for protecting the host system, you may use ttyd with docker like this:
 
-  - Sharing single docker container with multiple clients: docker run -it --rm -p 7681:7681 tsl0922/ttyd.
-  - Creating new docker container for each client: ttyd docker run -it --rm ubuntu.
+Docker containers are jailed environments which are more secure, this is useful for protecting the host system, you may use ttyd with docker like this:
+
+- Sharing single docker container with multiple clients: docker run -it --rm -p 7681:7681 tsl0922/ttyd.
+- Creating new docker container for each client: ttyd docker run -it --rm ubuntu.
 
 # Nginx reverse proxy
 
@@ -209,4 +216,5 @@ location ~ ^/ttyd(.*)$ {
 ```
 
 # AUTHOR
-  Shuanglei Tao \<tsl0922@gmail.com\> Visit https://github.com/tsl0922/ttyd to get more information and report bugs.
+
+Shuanglei Tao \<tsl0922@gmail.com\> Visit https://github.com/tsl0922/ttyd to get more information and report bugs.

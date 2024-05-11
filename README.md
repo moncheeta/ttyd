@@ -37,15 +37,15 @@ ttyd is a simple command-line tool for sharing terminal over the web.
 - Install with [Homebrew](https://docs.brew.sh/Homebrew-on-Linux) : `brew install ttyd`
 - Install the snap: `sudo snap install ttyd --classic`
 - Build from source (debian/ubuntu):
-    ```bash
-    sudo apt-get update
-    sudo apt-get install -y build-essential cmake git libjson-c-dev libwebsockets-dev
-    git clone https://github.com/tsl0922/ttyd.git
-    cd ttyd && mkdir build && cd build
-    cmake ..
-    make && sudo make install
-    ```
-    You may also need to compile/install [libwebsockets](https://libwebsockets.org) from source if the `libwebsockets-dev` package is outdated.
+  ```bash
+  sudo apt-get update
+  sudo apt-get install -y build-essential cmake git libjson-c-dev libwebsockets-dev
+  git clone https://github.com/tsl0922/ttyd.git
+  cd ttyd && mkdir build && cd build
+  cmake ..
+  make && sudo make install
+  ```
+  You may also need to compile/install [libwebsockets](https://libwebsockets.org) from source if the `libwebsockets-dev` package is outdated.
 - Install on OpenWrt: `opkg install ttyd`
 - Install on Gentoo: clone the [repo](https://bitbucket.org/mgpagano/ttyd/src/master) and follow the directions [here](https://wiki.gentoo.org/wiki/Custom_repository#Creating_a_local_repository).
 
@@ -104,5 +104,5 @@ Modern browsers, See [Browser Support](https://github.com/xtermjs/xterm.js#brows
 
 ## Alternatives
 
-* [Wetty](https://github.com/krishnasrinivas/wetty): [Node](https://nodejs.org) based web terminal (SSH/login)
-* [GoTTY](https://github.com/yudai/gotty): [Go](https://golang.org) based web terminal
+- [Wetty](https://github.com/krishnasrinivas/wetty): [Node](https://nodejs.org) based web terminal (SSH/login)
+- [GoTTY](https://github.com/yudai/gotty): [Go](https://golang.org) based web terminal

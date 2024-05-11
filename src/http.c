@@ -31,7 +31,7 @@ static int check_auth(struct lws *wsi, struct pss_http *pss) {
     return send_unauthorized(wsi, HTTP_STATUS_PROXY_AUTH_REQUIRED, WSI_TOKEN_HTTP_PROXY_AUTHENTICATE);
   }
 
-  if(server->credential != NULL) {
+  if (server->credential != NULL) {
     char buf[256];
     int len = lws_hdr_copy(wsi, buf, sizeof(buf), WSI_TOKEN_HTTP_AUTHORIZATION);
     if (len >= 7 && strstr(buf, "Basic ")) {
