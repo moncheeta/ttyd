@@ -20,7 +20,7 @@ const clientOptions = {
     unicodeVersion: "11",
 } as ClientOptions;
 const termOptions = {
-    fontSize: 22,
+    fontSize: 12,
     fontFamily: "JetBrains,Consolas,Liberation Mono,Menlo,Courier,monospace",
     theme: {
         foreground: "#ffffff",
